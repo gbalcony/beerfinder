@@ -1,10 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BeerService } from './beer.service';
+import { getTextValues, getValues, isSubstring } from './utils';
+import { BehaviorSubject, ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
+import { Beer } from './beer.model';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'beerfinder';
+  dataReady = false;
+  beerIdMatches: number[] = [];
+  private beers: Beer[] = [];
+  private beerSearchableTextIndex = new Map<Beer["id"], string[]>;
+  private destroy$ = new Subject<void>();
+
+  constructor(private beerService: BeerService) {}
+
+  ngOnInit() {
+    this.beerService.getBeers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(beers => {
+        this.beers = beers;
+        this.setBeerSearchableTextIndex(beers);
+        this.dataReady = true;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onNewSearch(searchText: string) {
+    if (!this.dataReady) return;
+
+    this.beerIdMatches = [];
+    this.beerSearchableTextIndex.forEach((value, key) => {
+      if (isSubstring(searchText, value)) {
+        this.beerIdMatches.push(key);
+      }
+    });
+  }
+
+  private setBeerSearchableTextIndex(beers: Beer[]) {
+    this.beerSearchableTextIndex.clear();
+    beers.forEach(beer => this.beerSearchableTextIndex.set(beer.id, getTextValues(beer)));
+  }
 }
