@@ -12,7 +12,7 @@ import { Beer } from './beer.model';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'beerfinder';
   dataReady = false;
-  beerIdMatches: number[] = [];
+  beerMatches: Beer[] = [];
   private beers: Beer[] = [];
   private beerSearchableTextIndex = new Map<Beer["id"], string[]>;
   private destroy$ = new Subject<void>();
@@ -37,10 +37,10 @@ export class AppComponent implements OnInit, OnDestroy {
   onNewSearch(searchText: string) {
     if (!this.dataReady) return;
 
-    this.beerIdMatches = [];
+    this.beerMatches = [];
     this.beerSearchableTextIndex.forEach((value, key) => {
       if (isSubstring(searchText, value)) {
-        this.beerIdMatches.push(key);
+        this.addBeerToBeerMatches(key);
       }
     });
   }
@@ -48,5 +48,17 @@ export class AppComponent implements OnInit, OnDestroy {
   private setBeerSearchableTextIndex(beers: Beer[]) {
     this.beerSearchableTextIndex.clear();
     beers.forEach(beer => this.beerSearchableTextIndex.set(beer.id, getTextValues(beer)));
+  }
+
+  private getBeer(id: number) {
+    return this.beers.find(beer => beer.id === id) ?? null;
+  }
+
+  private addBeerToBeerMatches(beerId: number) {
+    const beer = this.getBeer(beerId);
+
+    if (beer) {
+      this.beerMatches.push(beer);
+    }
   }
 }
