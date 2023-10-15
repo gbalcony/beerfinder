@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BeerService } from './beer.service';
-import { getTextValues, getValues, isSubstring } from './utils';
-import { BehaviorSubject, ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { Beer } from './beer.model';
+import { BeerService } from './beer.service';
+import { getTextValues, isSubstring } from './utils';
 
 @Component({
   selector: 'app-root',
@@ -13,19 +13,19 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'beerfinder';
   dataReady = false;
   beerMatches: Beer[] = [];
-  private beers: Beer[] = [];
-  private beerSearchableTextIndex = new Map<Beer["id"], string[]>;
-  private destroy$ = new Subject<void>();
 
+  private destroy$ = new Subject<void>();
+  private beerToText = new Map<Beer, string[]>();
+
+  
   constructor(private beerService: BeerService) {}
 
   ngOnInit() {
     this.beerService.getBeers()
       .pipe(takeUntil(this.destroy$))
       .subscribe(beers => {
-        this.beers = beers;
-        this.setBeerSearchableTextIndex(beers);
-        this.dataReady = true;
+        this.setBeerToText(beers);
+        this.setDataReady();
       });
   }
 
@@ -34,31 +34,43 @@ export class AppComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onNewSearch(searchText: string) {
+  onNewSearch(newSearchText: string) {
     if (!this.dataReady) return;
 
-    this.beerMatches = [];
-    this.beerSearchableTextIndex.forEach((value, key) => {
-      if (isSubstring(searchText, value)) {
-        this.addBeerToBeerMatches(key);
-      }
+    this.setBeerMatches(newSearchText);
+  }
+
+  private setBeerToText(beers: Beer[]) {
+    beers.forEach(beer => {
+      const beerSearchableText = getTextValues(beer);
+      this.beerToText.set(beer, beerSearchableText);
     });
   }
 
-  private setBeerSearchableTextIndex(beers: Beer[]) {
-    this.beerSearchableTextIndex.clear();
-    beers.forEach(beer => this.beerSearchableTextIndex.set(beer.id, getTextValues(beer)));
+  private setDataReady() {
+    this.dataReady = (this.beerToText.size > 0);
   }
 
-  private getBeer(id: number) {
-    return this.beers.find(beer => beer.id === id) ?? null;
-  }
-
-  private addBeerToBeerMatches(beerId: number) {
-    const beer = this.getBeer(beerId);
-
-    if (beer) {
-      this.beerMatches.push(beer);
+  private setBeerMatches(textToFind: string) {
+    this.clearBeerMatches();
+    if (textToFind.length > 0) {
+      this.addBeerMatches(textToFind);
     }
+  }
+
+  private clearBeerMatches() {
+    while (this.beerMatches.length > 0) {
+      this.beerMatches.pop();
+    }
+  }
+
+  private addBeerMatches(textToFind: string) {
+    const textToFindLowercase = textToFind.toLowerCase();
+
+    this.beerToText.forEach((texts, beer) => {
+      if (isSubstring(textToFind, texts)) {
+        this.beerMatches.push(beer);
+      }
+    });
   }
 }

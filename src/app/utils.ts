@@ -1,4 +1,9 @@
-export function getValues(value: unknown) {
+export function getTextValues(object: object) {
+    const values = getValues(object);
+    return values.map(value => String(value));
+}
+
+function getValues(value: unknown) {
     const values: unknown[] = [];
     getValuesInner(value, values);
     return values;
@@ -14,11 +19,11 @@ function getValuesInner(value: unknown, values: unknown[]) {
     }
 }
 
-export function getTextValues(object: object) {
-    const values = getValues(object);
-    return values.map(value => String(value));
-}
-
 export function isSubstring(substring: string, strings: string[]) {
-    return strings.some(str => str.includes(substring));
+    const substringLowercase = substring.toLowerCase();
+
+    return strings.some(str => {
+        const strLowercase = str.toLowerCase();
+        return strLowercase.includes(substringLowercase);
+    });
 }
