@@ -27,3 +27,7 @@ export function isSubstring(substring: string, strings: string[]) {
         return strLowercase.includes(substringLowercase);
     });
 }
+
+export function getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
+  }

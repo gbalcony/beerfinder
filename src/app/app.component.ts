@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Beer } from './beer.model';
 import { BeerService } from './beer.service';
-import { getTextValues, isSubstring } from './utils';
+import { getRandomInt, getTextValues, isSubstring } from './utils';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +13,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'beerfinder';
   dataReady = false;
   beerMatches: Beer[] = [];
+  beerLogoUrl?: string = undefined;
 
   private destroy$ = new Subject<void>();
   private beerToText = new Map<Beer, string[]>();
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(beers => {
         this.setBeerToText(beers);
         this.setDataReady();
+        this.setBeerLogoUrl();
       });
   }
 
@@ -72,5 +74,24 @@ export class AppComponent implements OnInit, OnDestroy {
         this.beerMatches.push(beer);
       }
     });
+  }
+
+  private setBeerLogoUrl() {
+    const randomBeer = this.getRandomBeer();
+    this.beerLogoUrl = randomBeer?.image_url;
+  }
+
+  private getRandomBeer() {
+    if (!this.dataReady) return;
+
+    const numberOfBeers = this.beerToText.size;
+    const randomNumber = (getRandomInt(numberOfBeers) + 1);
+    const beerIterator = this.beerToText.keys();
+    let beer: Beer | undefined = undefined;
+
+    for (let i = 1; i <= randomNumber; i++) {
+      beer = beerIterator.next().value;
+    }
+    return beer;
   }
 }
