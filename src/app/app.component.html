@@ -130,11 +130,11 @@
 
   <!-- Beer details -->
   <div class="terminal">
-      <pre *ngIf="!selectedBeer">Select a beer to see its details.</pre>
+      <p *ngIf="!selectedBeer">Select a beer to see its details.</p>
       <article *ngIf="selectedBeer">
-        <pre>{{selectedBeer.name}}</pre>
-        <pre>{{selectedBeer.tagline}}</pre>
-        <pre>{{selectedBeer.description}}</pre>
+        <h2>{{selectedBeer.name}}</h2>
+        <h3>{{selectedBeer.tagline}}</h3>
+        <p>{{selectedBeer.description}}</p>
       </article>
   </div>
 

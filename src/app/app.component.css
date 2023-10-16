@@ -199,6 +199,11 @@ a:hover {
     margin: 0;
 }
 
+.terminal {
+    color: white;
+    padding: 3rem 1rem 1rem;
+}
+
 .circle-link {
     height: 40px;
     width: 40px;
