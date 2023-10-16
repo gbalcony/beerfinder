@@ -14,6 +14,7 @@ export class AppComponent implements OnInit, OnDestroy {
   dataReady = false;
   beerMatches: Beer[] = [];
   beerLogoUrl?: string = undefined;
+  selectedBeer: Beer | null = null;
 
   private destroy$ = new Subject<void>();
   private beerToText = new Map<Beer, string[]>();
@@ -40,10 +41,11 @@ export class AppComponent implements OnInit, OnDestroy {
     if (!this.dataReady) return;
 
     this.setBeerMatches(newSearchText);
+    this.clearSelectedBeer();
   }
 
   onBeerClick(beer: Beer) {
-    console.log(beer);
+    this.selectedBeer = beer;
   }
 
   private setBeerToText(beers: Beer[]) {
@@ -68,6 +70,10 @@ export class AppComponent implements OnInit, OnDestroy {
     while (this.beerMatches.length > 0) {
       this.beerMatches.pop();
     }
+  }
+
+  private clearSelectedBeer() {
+    this.selectedBeer = null;
   }
 
   private addBeerMatches(textToFind: string) {

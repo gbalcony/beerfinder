@@ -128,15 +128,15 @@
     </button>
   </div> -->
 
-  <!-- Terminal -->
-  <!-- <div class="terminal" [ngSwitch]="selection.value">
-      <pre *ngSwitchDefault>ng generate component xyz</pre>
-      <pre *ngSwitchCase="'material'">ng add @angular/material</pre>
-      <pre *ngSwitchCase="'pwa'">ng add @angular/pwa</pre>
-      <pre *ngSwitchCase="'dependency'">ng add _____</pre>
-      <pre *ngSwitchCase="'test'">ng test</pre>
-      <pre *ngSwitchCase="'build'">ng build</pre>
-  </div> -->
+  <!-- Beer details -->
+  <div class="terminal">
+      <pre *ngIf="!selectedBeer">Select a beer to see its details.</pre>
+      <article *ngIf="selectedBeer">
+        <pre>{{selectedBeer.name}}</pre>
+        <pre>{{selectedBeer.tagline}}</pre>
+        <pre>{{selectedBeer.description}}</pre>
+      </article>
+  </div>
 
   <!-- Links -->
   <!-- <div class="card-container">
