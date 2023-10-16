@@ -13,7 +13,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'beerfinder';
   dataReady = false;
   beerMatches: Beer[] = [];
-  beerLogoUrl?: string = undefined;
+  beerLogo?: Beer = undefined;
   selectedBeer: Beer | null = null;
 
   private destroy$ = new Subject<void>();
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(beers => {
         this.setBeerToText(beers);
         this.setDataReady();
-        this.setBeerLogoUrl();
+        this.setBeerLogo();
       });
   }
 
@@ -86,9 +86,9 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  private setBeerLogoUrl() {
+  private setBeerLogo() {
     const randomBeer = this.getRandomBeer();
-    this.beerLogoUrl = randomBeer?.image_url;
+    this.beerLogo = randomBeer;
   }
 
   private getRandomBeer() {
