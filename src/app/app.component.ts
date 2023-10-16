@@ -42,6 +42,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.setBeerMatches(newSearchText);
   }
 
+  onBeerClick(beer: Beer) {
+    console.log(beer);
+  }
+
   private setBeerToText(beers: Beer[]) {
     beers.forEach(beer => {
       const beerSearchableText = getTextValues(beer);

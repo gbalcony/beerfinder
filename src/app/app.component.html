@@ -28,23 +28,7 @@
 <div class="content" role="main">
 
   <app-search-bar (newSearchText)="onNewSearch($event)"></app-search-bar>
-
-  
-
-  <div class="card-container">
-    <ng-container
-      *ngFor="let beerMatch of beerMatches"
-      [ngTemplateOutlet]="beerCard"
-      [ngTemplateOutletContext]="{$implicit: beerMatch}">
-    </ng-container>
-  </div>
-
-  <ng-template #beerCard let-data>
-    <button class="card card-small" (click)="selection.value = 'component'" tabindex="0">
-      <img src="{{data.image_url}}" alt="Picture of beer '{{data.name}}'">
-      <span>{{data.name}}</span>
-    </button>
-  </ng-template>
+  <app-beer-list [beers]="beerMatches" (clickedBeer)="onBeerClick($event)"></app-beer-list>
 
 
   <!-- Highlight Card -->

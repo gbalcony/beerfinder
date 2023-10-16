@@ -1,0 +1,17 @@
+<div class="content" role="main">
+
+    <div class="card-container">
+        <ng-container
+            *ngFor="let beer of beers"
+            [ngTemplateOutlet]="beerCard"
+            [ngTemplateOutletContext]="{$implicit: beer}">
+        </ng-container>
+    </div>
+
+    <ng-template #beerCard let-data>
+        <button class="card card-small" (click)="onBeerClick(data)" tabindex="0">
+            <img src="{{data.image_url}}" alt="Picture of beer '{{data.name}}'">
+            <span>{{data.name}}</span>
+        </button>
+    </ng-template>
+</div>
